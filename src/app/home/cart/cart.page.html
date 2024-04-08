@@ -1,0 +1,117 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Cart</ion-title>
+
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="previous"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if(model) {
+
+    <ion-item lines="none" class="total-item">
+      <ion-label> {{model?.totalItem}} items in Cart </ion-label>
+      <ion-button
+        fill="clear"
+        slot="end"
+        color="danger"
+        size="small"
+        (click)="cartService.clearCart()"
+      >
+        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    @for(item of model?.items; track $index) {
+    <ion-card class="cart-item">
+      <ion-item lines="none">
+        <ion-thumbnail slot="start">
+          <ion-img [src]="item?.cover"></ion-img>
+        </ion-thumbnail>
+
+        <ion-label>
+          <strong>{{item?.name}}</strong>
+          <p class="price">
+            <ion-text color="dark">
+              <span>{{cartService.currency}}</span
+              ><strong>{{item?.price}}</strong>
+            </ion-text>
+          </p>
+        </ion-label>
+
+        <ion-col slot="end" size="2">
+          <ion-row>
+            <ion-button color="light" (click)="addQuantity(item)">
+              <ion-icon name="add" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-row>
+
+          <ion-row class="quantity">
+            <ion-text>
+              <strong>{{item?.quantity}}</strong>
+            </ion-text>
+          </ion-row>
+
+          <ion-row>
+            <ion-button color="light" (click)="subtractQuantity(item)">
+              <ion-icon name="remove" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-row>
+        </ion-col>
+      </ion-item>
+    </ion-card>
+    } 
+
+    <!-- billing details -->
+    <ion-list lines="none" class="billing">
+      <ion-list-header>
+        <ion-label color="tertiary">Bill Details</ion-label>
+      </ion-list-header>
+
+      <ion-item-group>
+        <ion-item>
+          <ion-label color="dark">Item Total</ion-label>
+          <ion-text slot="end" color="dark">
+            {{cartService.currency}}{{model?.totalPrice | number: '0.2-2'}}
+          </ion-text>
+        </ion-item>
+
+        <ion-item class="delivery-fee">
+          <ion-label color="dark"> Delivery fee </ion-label>
+          <ion-text slot="end" color="dark">
+            {{cartService.currency}}{{model?.total_delivery_charge | number: '0.2-2'}}
+          </ion-text>
+        </ion-item>
+
+        <ion-item class="dashedBorderTop">
+          <ion-label color="dark"><strong>To Pay</strong></ion-label>
+          <ion-text slot="end" color="dark">
+            <strong
+              >{{cartService.currency}}{{model?.grandTotal | number: '0.2-2'}}
+            </strong>
+          </ion-text>
+        </ion-item>
+      </ion-item-group>
+    </ion-list>
+
+  } @else {
+    <div class="empty-screen" [align]="'center'">
+      <ion-icon name="bag-handle-outline" color="primary"></ion-icon>
+      <p>
+        No items available
+      </p>
+    </div> 
+  }
+</ion-content>
+
+@if(model) {
+  <ion-footer>
+    <ion-toolbar>
+      <ion-button expand="block" color="primary" mode="ios">
+        Checkout
+      </ion-button>
+    </ion-toolbar>
+  </ion-footer>
+  }
